@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=LabelImg
+Comment=Graphical image annotation tool for machine learning
+Exec=labelImg %U
+Icon=com.github.tzutalin.labelImg
+Terminal=false
+Type=Application
+Categories=

@@ -1,0 +1,97 @@
+{
+    "app-id": "com.github.tzutalin.labelImg",
+    "runtime": "org.kde.Platform",
+    "runtime-version": "5.13",
+    "sdk": "org.kde.Sdk",
+    "separate-locales": false,
+    "command": "labelImg",
+    "finish-args": [
+      "--device=dri",
+      "--share=ipc",
+      "--socket=wayland",
+      "--socket=x11"
+    ],
+    "modules": [
+        {
+          "name": "pyqt5",
+          "cleanup": [
+            "/bin/pyuic5",
+            "/bin/pyrcc5",
+            "/bin/pylupdate5"
+          ],
+          "config-opts": [
+            "--disable-static",
+            "--enable-x11"
+          ],
+          "sources": [
+            {
+              "type": "archive",
+              "sha256": "adc17c077bf233987b8e43ada87d1e0deca9bd71a13e5fd5fc377482ed69c827",
+              "url": "https://www.riverbankcomputing.com/static/Downloads/PyQt5/5.13.2/PyQt5-5.13.2.tar.gz"
+            },
+            {
+              "type": "script",
+              "commands": [
+                "python3 configure.py --disable QtBluetooth --disable QtDesigner --disable QtHelp --disable QtLocation --disable QtMacExtras --disable QtNfc --disable QtPositioning --disable QtPrintSupport --disable QtSensors --disable QtSerialPort --disable QtSql --disable QtTest --disable QtWinExtras --disable QtMultimedia --disable QtMultimediaWidgets --disable QtNetwork --disable QtQml --disable QtQuick --disable QtSvg --disable QtWebKit --disable QtWebKitWidgets --disable QtOpenGL --disable QtXml --disable QtXmlPatterns --disable QtDBus --disable QtX11Extras --disable QtQuickWidgets --disable QtWebSockets --disable QtWebChannel --disable QtNetworkAuth --assume-shared --confirm-license --no-designer-plugin --no-docstrings --no-qml-plugin --no-qsci-api --destdir ${FLATPAK_DEST}/lib/python3.7/site-packages/ --qsci-api-destdir=${FLATPAK_DEST}/qsci/ --sip=${FLATPAK_DEST}/bin/sip --sip-incdir=${FLATPAK_DEST}/include/ --sipdir=${FLATPAK_DEST}/share/sip/ --stubsdir ${FLATPAK_DEST}/lib/python3.7/site-packages/ --sysroot=${FLATPAK_DEST}/ QMAKE_CFLAGS_RELEASE='-I/usr/include/python3.7m/' QMAKE_CXXFLAGS_RELEASE='-I/usr/include/python3.7m/'"
+              ],
+              "dest-filename": "configure"
+            }
+          ],
+          "modules": [
+            {
+              "name": "sip",
+              "cleanup": [
+                "/bin",
+                "/include",
+                "/lib/python3.7/site-packages/sipconfig.py"
+              ],
+              "sources": [
+                {
+                  "type": "archive",
+                  "sha256": "5436b61a78f48c7e8078e93a6b59453ad33780f80c644e5f3af39f94be1ede44",
+                  "url": "https://www.riverbankcomputing.com/static/Downloads/sip/4.19.19/sip-4.19.19.tar.gz"
+                },
+                {
+                  "type": "script",
+                  "commands": [
+                    "python3 configure.py --bindir ${FLATPAK_DEST}/bin/ --destdir ${FLATPAK_DEST}/lib/python3.7/site-packages/ --incdir ${FLATPAK_DEST}/include/ --sipdir ${FLATPAK_DEST}/share/sip/ --stubsdir ${FLATPAK_DEST}/lib/python3.7/site-packages/ --sip-module PyQt5.sip"
+                  ],
+                  "dest-filename": "configure"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "python3-lxml",
+          "buildsystem": "simple",
+          "build-commands": [
+              "pip3 install --no-index --find-links=\"file://${PWD}\" --prefix=${FLATPAK_DEST} lxml"
+          ],
+          "sources": [
+              {
+                  "type": "file",
+                  "url": "https://files.pythonhosted.org/packages/e4/19/8dfeef50623892577dc05245093e090bb2bab4c8aed5cad5b03208959563/lxml-4.4.2.tar.gz",
+                  "sha256": "eff69ddbf3ad86375c344339371168640951c302450c5d3e9936e98d6459db06"
+              }
+          ]
+        },
+        {
+          "name": "labelImg",
+          "buildsystem": "simple",
+          "build-commands": [
+            "make qt5py3",
+            "python3 setup.py install --prefix=${FLATPAK_DEST}",
+            "mkdir -p ${FLATPAK_DEST}/usr/share/icons ${FLATPAK_DEST}/usr/share/applications",
+            "cp resources/icons/app.svg ${FLATPAK_DEST}/usr/share/icons/com.github.tzutalin.labelImg.svg",
+            "cp resources/desktop/labelImg.desktop ${FLATPAK_DEST}/usr/share/applications/com.github.tzutalin.labelImg.desktop"
+          ],
+          "sources": [
+            {
+              "type": "dir",
+              "path": "."
+            }
+          ]
+        }
+    ]
+}
